@@ -5,7 +5,7 @@ LOG_FILENAME = "quote_parser.log"
 LOG_BACKUP_COUNT: int = 50
 LOG_LEVEL = "DEBUG"
 
-BASE_URL = "https://quotes.toscrape.com" # don't put the last slash
+BASE_URL = "https://quotes.toscrape.com"  # don't put the last slash
 
 RESULT_FILE_NAME = 'result.json'
 

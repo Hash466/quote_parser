@@ -3,7 +3,8 @@ import os
 import queue
 from logging.handlers import (QueueHandler, QueueListener,
                               TimedRotatingFileHandler)
-from core.config import (LOG_FILENAME, LOG_LEVEL, LOG_BACKUP_COUNT, log_path)
+
+from core.config import LOG_BACKUP_COUNT, LOG_FILENAME, LOG_LEVEL, log_path
 
 
 if not os.path.exists(log_path):

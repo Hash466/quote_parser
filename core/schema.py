@@ -4,7 +4,7 @@ class Descriptors():
 
     def __get__(self, instance, owner):
         return instance.__dict__[self.name]
-    
+
     def __set__(self, instance, value):
         instance.__dict__[self.name] = value
 
@@ -22,10 +22,10 @@ class QuoteItem():
         self.text = text
         self.by = by
         self.about_author = about_author
-    
+
     def __str__(self) -> str:
         return f"Цитата: {self.text}, автор: {self.by}"
-    
+
     def fetch_object(self) -> dict:
         return {
             "text": self.text,
@@ -44,28 +44,28 @@ class QuoteArr():
     ) -> None:
         self.arr = arr
         self.top_tags = top_tags
-    
+
     def __str__(self) -> str:
         return (
             f"Количество цитат в массиве: {len(self.arr)} шт., топ "
             f"тегов: {self.top_tags}"
         )
-    
+
     def get_len(self) -> int:
         return len(self.arr)
-    
+
     def add_top_tag(self, tag: str) -> None:
         self.top_tags.append(tag)
-    
+
     def add_quote(self, quote: QuoteItem) -> None:
         self.arr.append(quote.fetch_object())
-    
+
     def fetch_object(self) -> dict:
         return {
             "quote_arr": self.arr,
             "top_tags": self.top_tags
         }
-     
+
 
 class Author():
     name = Descriptors()
@@ -78,10 +78,10 @@ class Author():
         self.name = name
         self.was_born = was_born
         self.description = description
-    
+
     def __str__(self) -> str:
         return f"Автор: {self.name}"
-    
+
     def fetch_object(self) -> dict:
         return {
             "author_name": self.name,

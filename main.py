@@ -1,12 +1,13 @@
-from httpx import AsyncClient
 import asyncio
 import sys
+
 from bs4 import BeautifulSoup
+from httpx import AsyncClient
 
 from core.config import BASE_URL
-from core.schema import QuoteItem, QuoteArr, Author
 from core.logger import get_logger
-from core.utils import text_clean, save_json_async
+from core.schema import Author, QuoteArr, QuoteItem
+from core.utils import save_json_async, text_clean
 
 
 logger = get_logger(__name__)
@@ -25,7 +26,7 @@ async def fetch_about_author(url: str) -> str:
     if about_author.get(url):
         logger.debug("Информация об авторе ранее уже была загружена")
         return about_author[url]
-    
+
     logger.debug("Загружаю страницу с данными об авторе")
     full_url = BASE_URL + url
     response = await fetch(full_url)
@@ -100,13 +101,12 @@ async def process_markup(markup: str, quote_arr: QuoteArr):
     logger.debug("Ищу ссылку на следующую страницу")
     next = soup.find("li", class_="next")
     if next:
-       logger.info("Найдена ссылка на следующую страницу")
-       next_link = soup.find('li', class_='next').find('a')
-       return next_link.get("href")
-    
+        logger.info("Найдена ссылка на следующую страницу")
+        next_link = soup.find('li', class_='next').find('a')
+        return next_link.get("href")
+
     logger.info("Ссылка на следующую страницу отсутствует")
     return None
-
 
 
 async def run_pars(url: str) -> None:
@@ -119,16 +119,16 @@ async def run_pars(url: str) -> None:
     logger.debug("Начинаю анализ полученной разметки")
     next_page = await process_markup(markup=response, quote_arr=quote_arr)
 
-    # while next_page:
-    #     logger.debug("Загружаю целевой URL")
-    #     response = await fetch(BASE_URL+next_page)
-    #     logger.debug("Начинаю анализ полученной разметки")
-    #     next_page = await process_markup(markup=response, quote_arr=quote_arr)
+    while next_page:
+        logger.debug("Загружаю целевой URL")
+        response = await fetch(BASE_URL+next_page)
+        logger.debug("Начинаю анализ полученной разметки")
+        next_page = await process_markup(markup=response, quote_arr=quote_arr)
     logger.info("Все данные собраны")
 
     await save_json_async(quote_arr.fetch_object())
     logger.info("Все данные собраны и сохранены в результирующий файл")
-   
+
 
 async def main() -> None:
     task_parsing = asyncio.create_task(run_pars(BASE_URL))
@@ -138,6 +138,6 @@ async def main() -> None:
 if __name__ == "__main__":
     try:
         asyncio.run(main())
-    
+
     except KeyboardInterrupt:
         raise sys.exit(0)
